@@ -32,7 +32,7 @@ Make sure you have the following installed:
 ### Steps to Run the Application
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/todo.git
+   git clone https://github.com/lacri1/todo.git
    cd todo
    ```
 
