@@ -4,7 +4,7 @@ This is a simple and efficient **Todo List Web Application** built with **Spring
 
 ##Preview
 
-[View Todo.pdf](https://github.com/Lacri1/Todo/blob/main/Todo.pdf)
+[Todo.pdf](https://github.com/Lacri1/Todo/blob/main/Todo.pdf)
 
 
 ## Features
