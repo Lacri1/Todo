@@ -2,7 +2,7 @@
 
 This is a simple and efficient **Todo List Web Application** built with **Spring Boot** and **Gradle**. Users can add, update (toggle completion status), and delete tasks through the web interface. The backend is powered by Spring Boot with REST API endpoints, and the frontend uses basic HTML and JavaScript.
 
-##Preview
+## Preview
 
 [Todo.pdf](https://github.com/Lacri1/Todo/blob/main/Todo.pdf)
 
