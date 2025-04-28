@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #todoForm {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #title {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li span {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .delete-button {
+            background-color: #d9534f;
+        }
+
+        .delete-button:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+<h1>Todo List</h1>
+
+<!-- Todo 추가 폼 -->
+<form id="todoForm">
+    <input type="text" id="title" placeholder="할 일을 입력하세요" required />
+    <button type="submit">추가</button>
+</form>
+
+<ul>
+    <!-- Todo 리스트가 여기에 동적으로 추가됩니다. -->
+</ul>
+
+<script>
+    // 페이지 로드 시 Todo 리스트를 가져오기
+    window.onload = function() {
+        fetch('/api/todos')
+            .then(response => response.json())
+            .then(todos => {
+                const ul = document.querySelector('ul');
+                ul.innerHTML = ''; // 기존 리스트 초기화
+                todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="${todo.completed ? 'completed' : ''}">${todo.task}</span>
+                        <div>
+                            <button onclick="toggleTodoStatus(${todo.id})">${todo.completed ? '☑' : '☐'}</button>
+                            <button class="delete-button" onclick="deleteTodo(${todo.id})">삭제</button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
+
+    // 폼 제출 시 Todo 객체를 JSON으로 보내기
+    document.getElementById("todoForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+
+        const todoData = {
+            task: title,
+            completed: false
+        };
+
+        fetch('/api/todos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(todoData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();  // 페이지를 새로고침하여 추가된 Todo를 표시
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    // 완료 상태 토글 함수
+    function toggleTodoStatus(id) {
+        fetch(`/api/todos/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                completed: true  // 또는 `false`로 변경 가능
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();  // 상태 업데이트 후 새로고침
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 삭제 함수
+    function deleteTodo(id) {
+        fetch(`/api/todos/${id}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                location.reload();  // 삭제 후 새로고침
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+</body>
+</html>
